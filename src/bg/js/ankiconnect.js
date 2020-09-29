@@ -1,11 +1,8 @@
 class Ankiconnect {
-    constructor() {
-        this.version = 6;
-    }
+    constructor() {}
 
     async ankiInvoke(action, params = {}, timeout = 3000) {
-        let version = this.version;
-        let request = { action, version, params };
+        let request = { action, params };
         return new Promise((resolve, reject) => {
             $.ajax({
                 url: 'http://127.0.0.1:8765',
@@ -14,25 +11,7 @@ class Ankiconnect {
                 timeout,
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
-                success: (response) => {
-                    try {
-                        if (Object.getOwnPropertyNames(response).length != 2) {
-                            throw 'response has an unexpected number of fields';
-                        }
-                        if (!response.hasOwnProperty('error')) {
-                            throw 'response is missing required error field';
-                        }
-                        if (!response.hasOwnProperty('result')) {
-                            throw 'response is missing required result field';
-                        }
-                        if (response.error) {
-                            throw response.error;
-                        }
-                        resolve(response.result);
-                    } catch (e) {
-                        reject(e);
-                    }
-                },
+                success: (data) => resolve(data),
                 error: (xhr, status, err) => resolve(null),
             });
         });
